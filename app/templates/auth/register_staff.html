@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block title %}Register Staff - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center" style="min-height: 70vh;">
+    <div class="col-md-6">
+        <div class="card card-glass">
+            <div class="card-header card-header-glass text-center py-4">
+                <h4 class="mb-0 text-success"><i class="fa-solid fa-helmet-safety me-2"></i>Staff Registration</h4>
+                <p class="text-muted mb-0 mt-2">Apply to guide and manage treks. Admin approval required.</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="POST" action="{{ url_for('auth.register_staff') }}" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            {{ form.username(class="form-control form-control-glass" + (" is-invalid" if form.username.errors else ""), placeholder="staff_guide") }}
+                            {% for error in form.username.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="email" class="form-label">Email Address</label>
+                            {{ form.email(class="form-control form-control-glass" + (" is-invalid" if form.email.errors else ""), placeholder="name@example.com") }}
+                            {% for error in form.email.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="name" class="form-label">Full Name</label>
+                            {{ form.name(class="form-control form-control-glass" + (" is-invalid" if form.name.errors else ""), placeholder="John Doe") }}
+                            {% for error in form.name.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="contact_details" class="form-label">Contact Details</label>
+                            {{ form.contact_details(class="form-control form-control-glass" + (" is-invalid" if form.contact_details.errors else ""), placeholder="Phone, social link, etc.") }}
+                            {% for error in form.contact_details.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            {{ form.password(class="form-control form-control-glass" + (" is-invalid" if form.password.errors else ""), placeholder="••••••••") }}
+                            {% for error in form.password.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6 mb-4">
+                            <label for="confirm_password" class="form-label">Confirm Password</label>
+                            {{ form.confirm_password(class="form-control form-control-glass" + (" is-invalid" if form.confirm_password.errors else ""), placeholder="••••••••") }}
+                            {% for error in form.confirm_password.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-premium w-100 py-2.5">
+                        <i class="fa-solid fa-paper-plane me-2"></i>Submit Application
+                    </button>
+                </form>
+            </div>
+            <div class="card-footer text-center py-3 bg-transparent border-0">
+                <p class="mb-0 text-muted">Already have an account? 
+                    <a href="{{ url_for('auth.login') }}" class="text-success fw-semibold">Sign In</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
