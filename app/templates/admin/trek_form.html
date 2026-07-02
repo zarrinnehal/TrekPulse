@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}{{ title }} - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card card-glass mb-4">
+            <div class="card-header card-header-glass py-3">
+                <h4 class="mb-0 text-success"><i class="fa-solid fa-mountain me-2"></i>{{ title }}</h4>
+                <p class="text-muted small mb-0 mt-1">Configure trek route, capacity limits, dates, and assign staff guides.</p>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="name" class="form-label">Trek Name</label>
+                            {{ form.name(class="form-control form-control-glass" + (" is-invalid" if form.name.errors else ""), placeholder="Alpine Meadows Peak") }}
+                            {% for error in form.name.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="location" class="form-label">Location</label>
+                            {{ form.location(class="form-control form-control-glass" + (" is-invalid" if form.location.errors else ""), placeholder="Rocky Mountains, CO") }}
+                            {% for error in form.location.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-4">
+                            <label for="difficulty" class="form-label">Difficulty</label>
+                            {{ form.difficulty(class="form-select form-control-glass" + (" is-invalid" if form.difficulty.errors else "")) }}
+                            {% for error in form.difficulty.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="duration" class="form-label">Duration (Days)</label>
+                            {{ form.duration(class="form-control form-control-glass" + (" is-invalid" if form.duration.errors else ""), placeholder="e.g. 5") }}
+                            {% for error in form.duration.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-4">
+                            <label for="total_slots" class="form-label">Total Slots</label>
+                            {{ form.total_slots(class="form-control form-control-glass" + (" is-invalid" if form.total_slots.errors else ""), placeholder="e.g. 20") }}
+                            {% for error in form.total_slots.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label for="start_date" class="form-label">Start Date</label>
+                            {{ form.start_date(class="form-control form-control-glass" + (" is-invalid" if form.start_date.errors else ""), type="date") }}
+                            {% for error in form.start_date.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="end_date" class="form-label">End Date</label>
+                            {{ form.end_date(class="form-control form-control-glass" + (" is-invalid" if form.end_date.errors else ""), type="date") }}
+                            {% for error in form.end_date.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <label for="status" class="form-label">Trek Status</label>
+                            {{ form.status(class="form-select form-control-glass" + (" is-invalid" if form.status.errors else "")) }}
+                            {% for error in form.status.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="assigned_staff_id" class="form-label">Assigned Staff Guide</label>
+                            {{ form.assigned_staff_id(class="form-select form-control-glass" + (" is-invalid" if form.assigned_staff_id.errors else "")) }}
+                            {% for error in form.assigned_staff_id.errors %}
+                                <div class="invalid-feedback">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-secondary px-4 py-2">Cancel</a>
+                        <button type="submit" class="btn btn-premium px-5 py-2">
+                            <i class="fa-solid fa-save me-2"></i>{{ title }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

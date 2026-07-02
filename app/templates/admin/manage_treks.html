@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Treks - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-sm-6">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-mountain text-success me-2"></i>Treks Route Management</h2>
+        <p class="text-muted">Create, edit, or delete trekking routes.</p>
+    </div>
+    <div class="col-sm-6 text-sm-end">
+        <a href="{{ url_for('admin.create_trek') }}" class="btn btn-premium">
+            <i class="fa-solid fa-plus me-2"></i>Add New Trek
+        </a>
+    </div>
+</div>
+
+<!-- Search Bar -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-glass p-3">
+            <form method="GET" action="{{ url_for('admin.manage_treks') }}" class="row g-2">
+                <div class="col-md-10">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" name="q" class="form-control form-control-glass ps-1" placeholder="Search by trek name or location..." value="{{ q }}">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-premium w-100 py-2">
+                        <i class="fa-solid fa-magnifying-glass me-2"></i>Search
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Treks Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card card-glass">
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover align-middle border-secondary border-opacity-10 mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th style="width: 80px;">ID</th>
+                                <th>Trek Name</th>
+                                <th>Location</th>
+                                <th>Difficulty</th>
+                                <th>Slots</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if treks %}
+                                {% for trek in treks %}
+                                    <tr>
+                                        <td class="text-muted">#{{ trek.id }}</td>
+                                        <td class="fw-bold text-white">{{ trek.name }}</td>
+                                        <td><i class="fa-solid fa-location-dot text-success me-1"></i>{{ trek.location }}</td>
+                                        <td>
+                                            <span class="badge-difficulty difficulty-{{ trek.difficulty.lower() }}">
+                                                {{ trek.difficulty }}
+                                            </span>
+                                        </td>
+                                        <td>{{ trek.available_slots }} / {{ trek.total_slots }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ trek.status.lower() }}">
+                                                {{ trek.status }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="d-inline-flex gap-2">
+                                                <a href="{{ url_for('admin.edit_trek', trek_id=trek.id) }}" class="btn btn-outline-premium btn-sm">
+                                                    <i class="fa-solid fa-pencil"></i>
+                                                </a>
+                                                <form method="POST" action="{{ url_for('admin.delete_trek', trek_id=trek.id) }}" onsubmit="return confirm('Are you sure you want to delete this trek?');">
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="7" class="text-center py-4 text-muted">No treks found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
