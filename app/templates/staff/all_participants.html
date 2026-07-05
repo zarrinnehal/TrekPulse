@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}My Participants - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-users text-success me-2"></i>My Participants</h2>
+        <p class="text-muted">A registry of all active trekkers signed up for your expeditions.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-glass">
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover align-middle border-secondary border-opacity-10 mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>Trek Name</th>
+                                <th>Participant Name</th>
+                                <th>Email</th>
+                                <th>Booking Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if bookings %}
+                                {% for booking in bookings %}
+                                    <tr>
+                                        <td class="fw-bold text-success">{{ booking.trek.name }}</td>
+                                        <td class="text-white">{{ booking.trekker.username }}</td>
+                                        <td>{{ booking.trekker.email }}</td>
+                                        <td>{{ booking.booking_date.strftime('%d %b %Y') }}</td>
+                                        <td><span class="status-badge status-open">Booked</span></td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4 text-muted">No participants booked for your treks yet.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

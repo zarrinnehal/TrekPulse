@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-user-circle text-success me-2"></i>My Profile</h2>
+        <p class="text-muted">Manage your username, email address, and security passwords.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card card-glass p-4">
+            <form method="POST" class="novalidate">
+                {{ form.hidden_tag() }}
+                <div class="mb-3">
+                    <label for="username" class="form-label text-muted small">Username</label>
+                    {{ form.username(class="form-control form-control-glass" + (" is-invalid" if form.username.errors else "")) }}
+                    {% for error in form.username.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    <label for="email" class="form-label text-muted small">Email Address</label>
+                    {{ form.email(class="form-control form-control-glass" + (" is-invalid" if form.email.errors else "")) }}
+                    {% for error in form.email.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-3">
+                    <label for="password" class="form-label text-muted small">New Password (leave blank to keep current)</label>
+                    {{ form.password(class="form-control form-control-glass" + (" is-invalid" if form.password.errors else "")) }}
+                    {% for error in form.password.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="mb-4">
+                    <label for="confirm_password" class="form-label text-muted small">Confirm New Password</label>
+                    {{ form.confirm_password(class="form-control form-control-glass" + (" is-invalid" if form.confirm_password.errors else "")) }}
+                    {% for error in form.confirm_password.errors %}
+                        <div class="invalid-feedback">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                
+                <button type="submit" class="btn btn-premium w-100 py-2.5">
+                    <i class="fa-solid fa-save me-1"></i>Update Profile
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

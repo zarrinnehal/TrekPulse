@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Expedition Participants - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-sm-6">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-user-group text-success me-2"></i>Trek Participants</h2>
+        <p class="text-muted">Currently registered trekkers for: <strong class="text-white">{{ trek.name }}</strong></p>
+    </div>
+    <div class="col-sm-6 text-sm-end">
+        <a href="{{ url_for('staff.dashboard') }}" class="btn btn-outline-premium">
+            <i class="fa-solid fa-arrow-left me-2"></i>Back to Dashboard
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-glass">
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover align-middle border-secondary border-opacity-10 mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th style="width: 100px;">User ID</th>
+                                <th>Username</th>
+                                <th>Email</th>
+                                <th>Registration Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if bookings %}
+                                {% for booking in bookings %}
+                                    <tr>
+                                        <td class="text-muted">#{{ booking.trekker.id }}</td>
+                                        <td class="fw-bold text-white">{{ booking.trekker.username }}</td>
+                                        <td>{{ booking.trekker.email }}</td>
+                                        <td>{{ booking.booking_date.strftime('%Y-%m-%d %H:%M') }}</td>
+                                        <td>
+                                            <span class="status-badge status-open">
+                                                Active Booking
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-5 text-muted">
+                                        <i class="fa-solid fa-users-slash fs-1 mb-3"></i>
+                                        <p class="mb-0">No trekkers have booked this trek yet.</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

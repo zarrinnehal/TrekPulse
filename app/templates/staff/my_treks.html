@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}My Assigned Treks - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-mountain text-success me-2"></i>My Assigned Treks</h2>
+        <p class="text-muted">A listing of all expeditions assigned to you by the Admin.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-glass">
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover align-middle border-secondary border-opacity-10 mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>Trek Name</th>
+                                <th>Location</th>
+                                <th>Participants</th>
+                                <th>Slots (Avail/Total)</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if treks_data %}
+                                {% for item in treks_data %}
+                                    <tr>
+                                        <td class="fw-bold text-white">{{ item.trek.name }}</td>
+                                        <td><i class="fa-solid fa-location-dot text-success me-1"></i>{{ item.trek.location }}</td>
+                                        <td>{{ item.registered_count }}</td>
+                                        <td>{{ item.trek.available_slots }} / {{ item.trek.total_slots }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ item.trek.status.lower() }}">
+                                                {{ item.trek.status }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ url_for('staff.edit_trek', trek_id=item.trek.id) }}" class="btn btn-premium btn-sm px-3">
+                                                Manage
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">No assigned treks found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}My Dashboard - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-clipboard-list text-success me-2"></i>My Dashboard</h2>
+        <p class="text-muted">Track your assigned routes, capacity settings, and registered participants.</p>
+    </div>
+</div>
+
+<!-- Counters Row -->
+<div class="row g-4 mb-5">
+    <div class="col-md-4">
+        <div class="card card-glass text-center p-4">
+            <div class="d-inline-flex align-items-center justify-content-center bg-success bg-opacity-10 text-success rounded-3 p-3 mx-auto mb-3" style="width: 50px; height: 50px;">
+                <i class="fa-solid fa-route fs-4"></i>
+            </div>
+            <h3 class="fw-bold mb-1 text-white">{{ assigned_count }}</h3>
+            <span class="text-muted small">Assigned Treks</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-glass text-center p-4">
+            <div class="d-inline-flex align-items-center justify-content-center bg-info bg-opacity-10 text-info rounded-3 p-3 mx-auto mb-3" style="width: 50px; height: 50px;">
+                <i class="fa-solid fa-users fs-4"></i>
+            </div>
+            <h3 class="fw-bold mb-1 text-white">{{ total_participants }}</h3>
+            <span class="text-muted small">Total Participants</span>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-glass text-center p-4">
+            <div class="d-inline-flex align-items-center justify-content-center bg-warning bg-opacity-10 text-warning rounded-3 p-3 mx-auto mb-3" style="width: 50px; height: 50px;">
+                <i class="fa-solid fa-compass fs-4"></i>
+            </div>
+            <h3 class="fw-bold mb-1 text-white">{{ open_count }}</h3>
+            <span class="text-muted small">Open Treks</span>
+        </div>
+    </div>
+</div>
+
+<!-- My Assigned Treks Table -->
+<div class="row">
+    <div class="col-12">
+        <div class="card card-glass">
+            <div class="card-header card-header-glass">
+                <h5 class="mb-0 text-white"><i class="fa-solid fa-mountain text-success me-2"></i>My Assigned Treks</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover align-middle border-secondary border-opacity-10 mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>Trek Name</th>
+                                <th>Location</th>
+                                <th>Participants</th>
+                                <th>Slots (Avail/Total)</th>
+                                <th>Status</th>
+                                <th class="text-end">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if treks_data %}
+                                {% for item in treks_data %}
+                                    <tr>
+                                        <td class="fw-bold text-white">{{ item.trek.name }}</td>
+                                        <td><i class="fa-solid fa-location-dot text-success me-1"></i>{{ item.trek.location }}</td>
+                                        <td>{{ item.registered_count }}</td>
+                                        <td>{{ item.trek.available_slots }} / {{ item.trek.total_slots }}</td>
+                                        <td>
+                                            <span class="status-badge status-{{ item.trek.status.lower() }}">
+                                                {{ item.trek.status }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <a href="{{ url_for('staff.edit_trek', trek_id=item.trek.id) }}" class="btn btn-premium btn-sm px-3">
+                                                Manage
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">No assigned treks found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
