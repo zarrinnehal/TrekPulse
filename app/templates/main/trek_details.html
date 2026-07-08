@@ -1,0 +1,131 @@
+{% extends "base.html" %}
+
+{% block title %}{{ trek.name }} - Trek Details{% endblock %}
+
+{% block content %}
+<div class="row mb-4 align-items-center">
+    <div class="col-12">
+        {% if current_user.is_authenticated and current_user.role == 'trekker' %}
+            <a href="{{ url_for('trekker.dashboard') }}" class="btn btn-outline-premium btn-sm">
+                <i class="fa-solid fa-arrow-left me-1"></i>Back to Dashboard
+            </a>
+        {% else %}
+            <a href="{{ url_for('main.index') }}" class="btn btn-outline-premium btn-sm">
+                <i class="fa-solid fa-arrow-left me-1"></i>Back to Explorer
+            </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Details Card Container (Wireframe Component 10) -->
+<div class="row g-4 mb-5">
+    <!-- Left Column: Visual Vector Icon Placeholder -->
+    <div class="col-md-5">
+        <div class="card card-glass h-100 text-center py-5 d-flex flex-column align-items-center justify-content-center" style="min-height: 300px; background: linear-gradient(135deg, rgba(16, 185, 129, 0.03) 0%, rgba(248, 250, 252, 0.9) 100%);">
+            <svg class="mb-4" width="80" height="80" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 80L45 25L70 80" stroke="#059669" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M50 80L70 45L90 80" stroke="#10b981" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 80H90" stroke="#64748b" stroke-width="6" stroke-linecap="round"/>
+            </svg>
+            <h4 class="fw-bold mb-2">{{ trek.name }}</h4>
+            <p class="text-muted mb-0"><i class="fa-solid fa-location-dot me-1 text-success"></i>{{ trek.location }}</p>
+        </div>
+    </div>
+    
+    <!-- Right Column: Trek Details Attributes Grid -->
+    <div class="col-md-7">
+        <div class="card card-glass h-100">
+            <div class="card-header card-header-glass">
+                <h5 class="mb-0 text-white"><i class="fa-solid fa-circle-info text-success me-2"></i>Trek Information</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="row g-4">
+                    <div class="col-6">
+                        <small class="text-muted d-block">Location</small>
+                        <span class="fw-bold text-white fs-5"><i class="fa-solid fa-location-dot text-success me-2"></i>{{ trek.location }}</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Difficulty</small>
+                        <span class="badge-difficulty difficulty-{{ trek.difficulty.lower() }} mt-1">
+                            {{ trek.difficulty }}
+                        </span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Duration</small>
+                        <span class="fw-bold text-white fs-5"><i class="fa-regular fa-clock text-success me-2"></i>{{ trek.duration }} Days</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Available Slots</small>
+                        <span class="fw-bold fs-5 {% if trek.available_slots == 0 %}text-danger{% else %}text-success{% endif %}">
+                            <i class="fa-solid fa-users me-2"></i>{{ trek.available_slots }} / {{ trek.total_slots }} Slots
+                        </span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">Start Date</small>
+                        <span class="fw-bold text-white fs-5"><i class="fa-regular fa-calendar text-success me-2"></i>{{ trek.start_date.strftime('%d %b %Y') }}</span>
+                    </div>
+                    <div class="col-6">
+                        <small class="text-muted d-block">End Date</small>
+                        <span class="fw-bold text-white fs-5"><i class="fa-regular fa-calendar text-success me-2"></i>{{ trek.end_date.strftime('%d %b %Y') }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Description & Book Button Row -->
+<div class="row">
+    <div class="col-12">
+        <div class="card card-glass p-4">
+            <h5 class="text-white fw-bold mb-3"><i class="fa-solid fa-align-left text-success me-2"></i>Trek Route Description</h5>
+            <p class="text-muted leading-relaxed mb-4">
+                Embark on the breathtaking journey of {{ trek.name }}. Nestled in the heart of {{ trek.location }}, this expedition offers a challenging yet highly rewarding {{ trek.duration }}-day escape. Guides will coordinate the safety routes, slots capacity, and check-ins, allowing participants to fully enjoy the alpine heights. Suitable for individuals matching the {{ trek.difficulty }} difficulty level.
+            </p>
+            
+            <hr class="border-secondary opacity-25 my-4">
+            
+            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div>
+                    <span class="text-muted small d-block">Current Status</span>
+                    <span class="status-badge status-{{ trek.status.lower() }}">{{ trek.status }}</span>
+                </div>
+                
+                <div>
+                    {% if current_user.is_authenticated %}
+                        {% if current_user.role == 'trekker' %}
+                            {% if already_booked %}
+                                <button class="btn btn-outline-success px-5 py-2.5" disabled>
+                                    <i class="fa-solid fa-check me-2"></i>You've Booked This Trek
+                                </button>
+                            {% elif trek.status == 'Open' and trek.available_slots > 0 %}
+                                <form method="POST" action="{{ url_for('trekker.book_trek', trek_id=trek.id) }}">
+                                    <button type="submit" class="btn btn-premium px-5 py-2.5">
+                                        <i class="fa-solid fa-ticket me-2"></i>Book Trek Now
+                                    </button>
+                                </form>
+                            {% elif trek.available_slots == 0 %}
+                                <button class="btn btn-outline-secondary px-5 py-2.5" disabled>
+                                    <i class="fa-solid fa-ban me-2"></i>Fully Booked / Sold Out
+                                </button>
+                            {% else %}
+                                <button class="btn btn-outline-secondary px-5 py-2.5" disabled>
+                                    <i class="fa-solid fa-ban me-2"></i>Bookings Closed ({{ trek.status }})
+                                </button>
+                            {% endif %}
+                        {% else %}
+                            <button class="btn btn-outline-secondary px-5 py-2.5" disabled>
+                                Logged in as {{ current_user.role|capitalize }}
+                            </button>
+                        {% endif %}
+                    {% else %}
+                        <a href="{{ url_for('auth.login') }}" class="btn btn-premium px-5 py-2.5">
+                            <i class="fa-solid fa-sign-in-alt me-2"></i>Sign In to Book Trek
+                        </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

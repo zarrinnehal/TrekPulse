@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-receipt text-success me-2"></i>My Bookings</h2>
+        <p class="text-muted">A comprehensive listing of all your reserved, active, and past booking slips.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card card-glass">
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover align-middle border-secondary border-opacity-10 mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>Trek Name</th>
+                                <th>Booking Date</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if bookings %}
+                                {% for booking in bookings %}
+                                    <tr>
+                                        <td class="fw-bold text-white">{{ booking.trek.name }}</td>
+                                        <td>{{ booking.booking_date.strftime('%d %b %Y') }}</td>
+                                        <td>
+                                            <span class="status-badge {% if booking.status == 'Booked' %}status-open{% elif booking.status == 'Completed' %}status-completed{% else %}status-closed{% endif %}">
+                                                {{ booking.status }}
+                                            </span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="d-inline-flex gap-2 align-items-center">
+                                                <a href="{{ url_for('main.trek_details', trek_id=booking.trek.id) }}" class="btn btn-outline-premium btn-sm">View Details</a>
+                                                {% if booking.status == 'Booked' %}
+                                                    <form method="POST" action="{{ url_for('trekker.cancel_booking', booking_id=booking.id) }}" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                                        <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">You have no booking records.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

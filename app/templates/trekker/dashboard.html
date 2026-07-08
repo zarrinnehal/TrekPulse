@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-compass text-success me-2"></i>Welcome, {{ current_user.username }}!</h2>
+        <p class="text-muted">Manage your bookings, explore available expeditions, and coordinate trekking logs.</p>
+    </div>
+</div>
+
+<!-- Available Treks Section (Wireframe component 9) -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="card card-glass">
+            <div class="card-header card-header-glass d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <h5 class="mb-0 text-white"><i class="fa-solid fa-mountain text-success me-2"></i>Available Treks</h5>
+                
+                <!-- inline search filters -->
+                <form method="GET" action="{{ url_for('trekker.dashboard') }}" class="d-inline-flex gap-2">
+                    <select name="difficulty" class="form-select form-control-glass py-1.5 px-3 border-0 small">
+                        <option value="">Difficulty: All</option>
+                        <option value="Easy" {% if difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                        <option value="Moderate" {% if difficulty == 'Moderate' %}selected{% endif %}>Moderate</option>
+                        <option value="Hard" {% if difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                    </select>
+                    
+                    <input type="text" name="location" class="form-control form-control-glass py-1.5 px-3 border-0 small" placeholder="Location: All" value="{{ location }}">
+                    
+                    <button type="submit" class="btn btn-premium btn-sm px-3">Filter</button>
+                    {% if difficulty or location %}
+                        <a href="{{ url_for('trekker.dashboard') }}" class="btn btn-outline-secondary btn-sm px-2"><i class="fa-solid fa-xmark"></i></a>
+                    {% endif %}
+                </form>
+            </div>
+            
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover align-middle border-secondary border-opacity-10 mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>Trek Name</th>
+                                <th>Location</th>
+                                <th>Difficulty</th>
+                                <th>Duration</th>
+                                <th>Available Slots</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if treks %}
+                                {% for trek in treks %}
+                                    <tr>
+                                        <td class="fw-bold text-white">{{ trek.name }}</td>
+                                        <td><i class="fa-solid fa-location-dot text-success me-1"></i>{{ trek.location }}</td>
+                                        <td>
+                                            <span class="badge-difficulty difficulty-{{ trek.difficulty.lower() }}">
+                                                {{ trek.difficulty }}
+                                            </span>
+                                        </td>
+                                        <td>{{ trek.duration }} Days</td>
+                                        <td>{{ trek.available_slots }} / {{ trek.total_slots }}</td>
+                                        <td class="text-end">
+                                            <div class="d-inline-flex gap-2">
+                                                <a href="{{ url_for('main.trek_details', trek_id=trek.id) }}" class="btn btn-outline-premium btn-sm">View Details</a>
+                                                {% if trek.available_slots > 0 %}
+                                                    <form method="POST" action="{{ url_for('trekker.book_trek', trek_id=trek.id) }}">
+                                                        <button type="submit" class="btn btn-premium btn-sm px-3">Book Now</button>
+                                                    </form>
+                                                {% else %}
+                                                    <button class="btn btn-outline-secondary btn-sm" disabled>Full</button>
+                                                {% endif %}
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="text-center py-4 text-muted">No open treks match your filter criteria.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- My Bookings Section (Wireframe component 9) -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-glass">
+            <div class="card-header card-header-glass">
+                <h5 class="mb-0 text-white"><i class="fa-solid fa-ticket text-success me-2"></i>My Bookings</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover align-middle border-secondary border-opacity-10 mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>Trek Name</th>
+                                <th>Booking Date</th>
+                                <th>Status</th>
+                                <th class="text-end">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if bookings %}
+                                {% for booking in bookings %}
+                                    <tr>
+                                        <td class="fw-bold text-white">{{ booking.trek.name }}</td>
+                                        <td>{{ booking.booking_date.strftime('%d %b %Y') }}</td>
+                                        <td>
+                                            <span class="status-badge status-open">Booked</span>
+                                        </td>
+                                        <td class="text-end">
+                                            <div class="d-inline-flex gap-2 align-items-center">
+                                                <a href="{{ url_for('main.trek_details', trek_id=booking.trek.id) }}" class="btn btn-outline-premium btn-sm">View Details</a>
+                                                <form method="POST" action="{{ url_for('trekker.cancel_booking', booking_id=booking.id) }}" onsubmit="return confirm('Are you sure you want to cancel this booking?');">
+                                                    <button type="submit" class="btn btn-outline-danger btn-sm">Cancel</button>
+                                                </form>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">You have no active bookings. Start reserving treks above!</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

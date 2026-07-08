@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block title %}Trek History - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-history text-success me-2"></i>Trekking History</h2>
+        <p class="text-muted">A record of your past registrations and completed expeditions.</p>
+    </div>
+</div>
+
+<!-- History Table (Wireframe Component 12) -->
+<div class="row">
+    <div class="col-12">
+        <div class="card card-glass">
+            <div class="card-header card-header-glass">
+                <h5 class="mb-0 text-white"><i class="fa-solid fa-clock-rotate-left text-success me-2"></i>Past Expeditions</h5>
+            </div>
+            <div class="card-body p-4">
+                <div class="table-responsive">
+                    <table class="table  table-hover align-middle border-secondary border-opacity-10 mb-0">
+                        <thead>
+                            <tr class="text-muted">
+                                <th>Trek Name</th>
+                                <th>Trek Dates</th>
+                                <th>Completed On</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if bookings %}
+                                {% for booking in bookings %}
+                                    <tr>
+                                        <td class="fw-bold text-white">{{ booking.trek.name }}</td>
+                                        <td>
+                                            {{ booking.trek.start_date.strftime('%d %b %Y') }} to {{ booking.trek.end_date.strftime('%d %b %Y') }}
+                                        </td>
+                                        <td>
+                                            {% if booking.status == 'Completed' or booking.trek.status == 'Completed' %}
+                                                {{ booking.trek.end_date.strftime('%d %b %Y') }}
+                                            {% else %}
+                                                <span class="text-muted">--</span>
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="status-badge {% if booking.status == 'Booked' %}status-open{% elif booking.status == 'Completed' %}status-completed{% else %}status-closed{% endif %}">
+                                                {{ booking.status }}
+                                            </span>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="4" class="text-center py-4 text-muted">No trekking history found.</td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

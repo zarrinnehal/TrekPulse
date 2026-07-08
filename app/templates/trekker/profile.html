@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title %}Edit Profile - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card card-glass">
+            <div class="card-header card-header-glass py-3">
+                <h4 class="mb-0 text-success"><i class="fa-solid fa-user-gear me-2"></i>Profile Settings</h4>
+                <p class="text-muted small mb-0 mt-1">Manage your account details and update credentials.</p>
+            </div>
+            
+            <div class="card-body p-4">
+                <form method="POST" novalidate>
+                    {{ form.hidden_tag() }}
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">Username</label>
+                        {{ form.username(class="form-control form-control-glass" + (" is-invalid" if form.username.errors else "")) }}
+                        {% for error in form.username.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">Email Address</label>
+                        {{ form.email(class="form-control form-control-glass" + (" is-invalid" if form.email.errors else "")) }}
+                        {% for error in form.email.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">New Password</label>
+                        {{ form.password(class="form-control form-control-glass" + (" is-invalid" if form.password.errors else ""), placeholder="Leave blank to keep current") }}
+                        {% for error in form.password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="confirm_password" class="form-label">Confirm New Password</label>
+                        {{ form.confirm_password(class="form-control form-control-glass" + (" is-invalid" if form.confirm_password.errors else ""), placeholder="Leave blank to keep current") }}
+                        {% for error in form.confirm_password.errors %}
+                            <div class="invalid-feedback">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex justify-content-end gap-2">
+                        <a href="{{ url_for('trekker.dashboard') }}" class="btn btn-outline-secondary px-4 py-2">Cancel</a>
+                        <button type="submit" class="btn btn-premium px-5 py-2">
+                            <i class="fa-solid fa-check me-2"></i>Update Profile
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

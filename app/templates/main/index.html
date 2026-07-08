@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+
+{% block title %}Explore Treks - TrekSync{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<div class="row mb-5">
+    <div class="col-12">
+        <div class="p-5 text-center rounded-5 card-glass" style="background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(248, 250, 252, 0.9) 100%); border: 1px solid var(--border-light);">
+            <svg class="mb-4" width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M15 80L45 25L70 80" stroke="#059669" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M50 80L70 45L90 80" stroke="#10b981" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M10 80H90" stroke="#64748b" stroke-width="5" stroke-linecap="round"/>
+                <circle cx="75" cy="25" r="8" fill="#f59e0b"/>
+            </svg>
+            <h1 class="display-5 fw-bold mb-3">Find Your Next Adventure</h1>
+            <p class="lead text-muted mb-4">Explore paths less traveled, guided by our professional staff.</p>
+            {% if not current_user.is_authenticated %}
+                <a class="btn btn-premium btn-lg px-5 py-3" href="{{ url_for('auth.register_trekker') }}">
+                    <i class="fa-solid fa-compass me-2"></i>Start Your Journey
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Search & Filter Bar -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card card-glass p-3">
+            <form method="GET" action="{{ url_for('main.index') }}" class="row g-3">
+                <div class="col-md-5">
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-0 text-muted"><i class="fa-solid fa-magnifying-glass"></i></span>
+                        <input type="text" name="search" class="form-control form-control-glass ps-1" placeholder="Search by name or location..." value="{{ search }}">
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <select name="difficulty" class="form-select form-control-glass">
+                        <option value="">All Difficulties</option>
+                        <option value="Easy" {% if difficulty == 'Easy' %}selected{% endif %}>Easy</option>
+                        <option value="Moderate" {% if difficulty == 'Moderate' %}selected{% endif %}>Moderate</option>
+                        <option value="Hard" {% if difficulty == 'Hard' %}selected{% endif %}>Hard</option>
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-premium w-100 py-2">
+                        <i class="fa-solid fa-filter me-2"></i>Apply Filters
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Treks Grid -->
+<div class="row g-4">
+    {% if treks %}
+        {% for trek in treks %}
+            <div class="col-md-4 col-sm-6">
+                <div class="card card-glass h-100">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge-difficulty difficulty-{{ trek.difficulty.lower() }}">
+                                {{ trek.difficulty }}
+                            </span>
+                            <span class="status-badge status-{{ trek.status.lower() }}">
+                                {{ trek.status }}
+                            </span>
+                        </div>
+                        <h4 class="card-title text-white fw-bold mb-2">{{ trek.name }}</h4>
+                        <p class="text-muted small mb-3">
+                            <i class="fa-solid fa-location-dot text-success me-2"></i>{{ trek.location }}
+                        </p>
+                        
+                        <hr class="border-secondary opacity-25 my-3">
+                        
+                        <div class="row mb-4">
+                            <div class="col-6">
+                                <small class="text-muted d-block">Duration</small>
+                                <span class="fw-semibold"><i class="fa-regular fa-clock me-1 text-success"></i>{{ trek.duration }} Days</span>
+                            </div>
+                            <div class="col-6 text-end">
+                                <small class="text-muted d-block">Slots Available</small>
+                                <span class="fw-semibold {% if trek.available_slots == 0 %}text-danger{% else %}text-success{% endif %}">
+                                    <i class="fa-solid fa-users me-1"></i>{{ trek.available_slots }} / {{ trek.total_slots }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mt-auto">
+                            {% if current_user.is_authenticated %}
+                                {% if current_user.role == 'trekker' %}
+                                    {% if trek.status == 'Open' and trek.available_slots > 0 %}
+                                        <form method="POST" action="{{ url_for('trekker.book_trek', trek_id=trek.id) }}">
+                                            <button type="submit" class="btn btn-premium w-100 py-2">
+                                                <i class="fa-solid fa-ticket me-2"></i>Book Trek Now
+                                            </button>
+                                        </form>
+                                    {% elif trek.available_slots == 0 %}
+                                        <button class="btn btn-outline-secondary w-100 py-2" disabled>
+                                            <i class="fa-solid fa-ban me-2"></i>Sold Out
+                                        </button>
+                                    {% else %}
+                                        <button class="btn btn-outline-secondary w-100 py-2" disabled>
+                                            <i class="fa-solid fa-ban me-2"></i>Bookings Closed
+                                        </button>
+                                    {% endif %}
+                                {% elif current_user.role == 'admin' %}
+                                    <a class="btn btn-outline-premium w-100 py-2" href="{{ url_for('admin.dashboard') }}">
+                                        <i class="fa-solid fa-screwdriver-wrench me-2"></i>Admin Dashboard
+                                    </a>
+                                {% elif current_user.role == 'staff' %}
+                                    <a class="btn btn-outline-premium w-100 py-2" href="{{ url_for('staff.dashboard') }}">
+                                        <i class="fa-solid fa-clipboard-list me-2"></i>Staff Dashboard
+                                    </a>
+                                {% endif %}
+                            {% else %}
+                                <a class="btn btn-premium w-100 py-2" href="{{ url_for('auth.login') }}">
+                                    <i class="fa-solid fa-sign-in-alt me-2"></i>Sign In to Book
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <div class="col-12 text-center py-5">
+            <div class="card card-glass p-5">
+                <i class="fa-solid fa-mountain-sun fs-1 text-muted mb-3"></i>
+                <h4 class="text-white">No Treks Found</h4>
+                <p class="text-muted">Try adjusting your filters or search terms.</p>
+            </div>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
