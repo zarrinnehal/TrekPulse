@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Settings - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-gears text-success me-2"></i>Application Settings</h2>
+        <p class="text-muted">Configure platform values, security policies, and DB backups.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-lg-6">
+        <div class="card card-glass p-4 mb-4">
+            <h5 class="text-white fw-bold mb-3"><i class="fa-solid fa-server text-success me-2"></i>Database Parameters</h5>
+            <div class="mb-3">
+                <label class="form-label text-muted small">Database Provider</label>
+                <input type="text" class="form-control form-control-glass bg-opacity-25" value="SQLite (Standard SQL Connection)" disabled>
+            </div>
+            <div class="mb-3">
+                <label class="form-label text-muted small">Connection URI</label>
+                <input type="text" class="form-control form-control-glass bg-opacity-25" value="sqlite:///trekking.db" disabled>
+            </div>
+            <button class="btn btn-outline-premium btn-sm" disabled>Verify DB Integrity</button>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card card-glass p-4 mb-4">
+            <h5 class="text-white fw-bold mb-3"><i class="fa-solid fa-shield text-success me-2"></i>Platform Flags</h5>
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input bg-success border-0" type="checkbox" role="switch" checked disabled>
+                <label class="form-check-label text-white">Prevent Overbooking Protection</label>
+            </div>
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input bg-success border-0" type="checkbox" role="switch" checked disabled>
+                <label class="form-check-label text-white">Manual Guide Approval Required</label>
+            </div>
+            <div class="form-check form-switch mb-3">
+                <input class="form-check-input bg-success border-0" type="checkbox" role="switch" checked disabled>
+                <label class="form-check-label text-white">Secure CSRF Protection Enabled</label>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
