@@ -1,0 +1,145 @@
+{% extends "base.html" %}
+
+{% block title %}Reports - TrekSync{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col-12">
+        <h2 class="text-white fw-bold mb-1"><i class="fa-solid fa-chart-line text-success me-2"></i>Analytics & Reports</h2>
+        <p class="text-muted">High-level trends, bookings distributions, and route statistics.</p>
+    </div>
+</div>
+
+<div class="row g-4 mb-5">
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-glass text-center p-4">
+            <h3 class="fw-bold mb-1 text-success">{{ total_treks }}</h3>
+            <span class="text-muted small">Total Routes</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-glass text-center p-4">
+            <h3 class="fw-bold mb-1 text-info">{{ total_users }}</h3>
+            <span class="text-muted small">Total Trekkers</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-glass text-center p-4">
+            <h3 class="fw-bold mb-1 text-warning">{{ total_staff }}</h3>
+            <span class="text-muted small">Total Staff</span>
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="card card-glass text-center p-4">
+            <h3 class="fw-bold mb-1 text-primary">{{ total_bookings }}</h3>
+            <span class="text-muted small">Total Bookings</span>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-md-8">
+        <div class="card card-glass">
+            <div class="card-header card-header-glass">
+                <h5 class="mb-0 text-white"><i class="fa-solid fa-chart-bar text-success me-2"></i>Most Booked Treks</h5>
+            </div>
+            <div class="card-body p-4">
+                <div style="position: relative; height: 260px;">
+                    <canvas id="reportsPopularChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card card-glass">
+            <div class="card-header card-header-glass">
+                <h5 class="mb-0 text-white"><i class="fa-solid fa-chart-pie text-success me-2"></i>Difficulty Breakdown</h5>
+            </div>
+            <div class="card-body p-4">
+                <div style="position: relative; height: 260px;">
+                    <canvas id="reportsDiffChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Popular Treks Chart
+    const popularCtx = document.getElementById('reportsPopularChart').getContext('2d');
+    const trekLabels = {{ top_treks_labels | safe }};
+    const trekData = {{ top_treks_data | safe }};
+    
+    new Chart(popularCtx, {
+        type: 'bar',
+        data: {
+            labels: trekLabels.length ? trekLabels : ['No Bookings Yet'],
+            datasets: [{
+                label: 'Bookings',
+                data: trekData.length ? trekData : [0],
+                backgroundColor: 'rgba(16, 185, 129, 0.6)',
+                borderColor: 'rgba(16, 185, 129, 1)',
+                borderWidth: 1.5,
+                borderRadius: 5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    grid: { color: '#f1f5f9' },
+                    ticks: { color: '#64748b', stepSize: 1 }
+                },
+                x: {
+                    grid: { display: false },
+                    ticks: { color: '#64748b' }
+                }
+            },
+            plugins: {
+                legend: { display: false }
+            }
+        }
+    });
+
+    // Difficulty Chart
+    const diffCtx = document.getElementById('reportsDiffChart').getContext('2d');
+    const diffLabels = {{ diff_labels | safe }};
+    const diffData = {{ diff_data | safe }};
+    
+    new Chart(diffCtx, {
+        type: 'doughnut',
+        data: {
+            labels: diffLabels.length ? diffLabels : ['No Treks Yet'],
+            datasets: [{
+                data: diffData.length ? diffData : [0],
+                backgroundColor: [
+                    'rgba(16, 185, 129, 0.6)',
+                    'rgba(245, 158, 11, 0.6)',
+                    'rgba(239, 68, 68, 0.6)'
+                ],
+                borderColor: [
+                    '#10b981',
+                    '#f59e0b',
+                    '#ef4444'
+                ],
+                borderWidth: 1.5
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: { color: '#64748b', padding: 15 }
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}
